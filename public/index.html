@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pastebin Web Application</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/4436/4436481.png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Header section -->
+    <header class="bg-gray-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold"> 🌱 Pastebin Web Application</h1>
+            <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
+        </div>
+    </header>
+
+    <!-- Main content section -->
+    <div class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4" id="welcomeMessage"></h2>
+        <!-- Form to create a new paste -->
+        <form id="createPasteForm" class="mb-4">
+            <div class="mb-2">
+                <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                <input type="text" id="title" name="title" class="mt-1 p-2 border border-gray-300 rounded-md w-full" required>
+            </div>
+            <div class="mb-2">
+                <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                <textarea id="content" name="content" rows="4" class="mt-1 p-2 border border-gray-300 rounded-md w-full" required></textarea>
+            </div>
+            <div class="mb-2">
+                <label for="expiration_date" class="block text-sm font-medium text-gray-700">Expiration Date (Optional)</label>
+                <input type="date" id="expiration_date" name="expiration_date" class="mt-1 p-2 border border-gray-300 rounded-md w-full">
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Create Paste</button>
+        </form>
+        
+        <br>
+        <h2 class="text-2xl font-bold mb-4">List of Recently Created Pastes</h2>
+
+        <!-- Placeholder for displaying pastes -->
+        <div id="pasteList"></div>
+    </div>
+
+    <!-- Footer section -->
+    <footer class="bg-gray-300 text-gray-700 p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Pastebin Web Application. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Function to fetch and display pastes
+        async function fetchAndDisplayPastes() {
+            try {
+                const response = await axios.get('/api/pastes');
+                const pastes = response.data;
+                const pasteList = document.getElementById('pasteList');
+                const currentUser = await getCurrentUser();
+                pasteList.innerHTML = ''; // Clear previous content
+
+                pastes.forEach(paste => {
+                    const pasteItem = document.createElement('div');
+                    pasteItem.className = 'bg-white shadow-md rounded-md p-4 mb-4';
+                    pasteItem.innerHTML = `
+                        <h2 class="text-xl font-bold">${paste.title}</h2>
+                        <p class="text-gray-700 mt-2">${paste.content}</p>
+                        <p class="text-gray-500 mt-2">Created at: ${new Date(paste.created_at).toLocaleString()}</p>
+                        ${paste.expiration_date ? `<p class="text-red-500 mt-2">Expires at: ${new Date(paste.expiration_date).toLocaleString()}</p>` : ''}
+                        <p class="text-gray-500 mt-2">Author: ${currentUser.username}</p>
+                        <p class="text-gray-500 mt-2">Email: ${currentUser.email}</p>
+                        <p><a href="/api/pastes/${paste._id}" class="text-blue-500 mt-2">View [ID: ${paste._id}]</a></p>
+                        <div class="mt-4">
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-md mr-2" onclick="updatePaste('${paste._id}')">Update</button>
+                            <button class="bg-red-500 text-white px-4 py-2 rounded-md" onclick="deletePaste('${paste._id}', '${paste.title}')">Delete</button>
+                        </div>
+                    `;
+                    pasteList.appendChild(pasteItem);
+                });
+            } catch (error) {
+                console.error('Error fetching pastes:', error);
+            }
+        }
+
+        // Function to handle form submission
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                await axios.post('/api/pastes', Object.fromEntries(formData));
+                form.reset(); // Clear form fields
+                fetchAndDisplayPastes(); // Refresh paste list
+            } catch (error) {
+                console.error('Error creating paste:', error);
+            }
+        }
+
+        // Function to handle paste update
+        async function updatePaste(pasteId) {
+            try {
+                const response = await axios.get(`/api/pastes/${pasteId}`);
+                const paste = response.data;
+
+                const popup = window.open('', '_blank', 'width=400,height=300');
+
+                const formHtml = `
+                    <html>
+                    <head>
+                        <title>Edit Paste</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; }
+                            input[type="text"], textarea { width: 100%; margin-bottom: 10px; }
+                            button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Edit Paste</h2>
+                        <form id="editPasteForm">
+                            <label for="newTitle">Title:</label><br>
+                            <input type="text" id="newTitle" name="newTitle" value="${paste.title}" required><br>
+                            <label for="newContent">Content:</label><br>
+                            <textarea id="newContent" name="newContent" rows="4" required>${paste.content}</textarea><br>
+                            <label for="newExpirationDate">Expiration Date:</label><br>
+                            <input type="date" id="newExpirationDate" name="newExpirationDate" value="${new Date(paste.expiration_date).toISOString().slice(0, 10)}" required><br><br>
+                            <button type="submit">Update Paste</button>
+                        </form>
+                    </body>
+                    </html>
+                `;
+
+                popup.document.write(formHtml);
+
+                // Prevent the form from being submitted and handle the update logic
+                popup.document.getElementById('editPasteForm').addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    const newTitle = popup.document.getElementById('newTitle').value;
+                    const newContent = popup.document.getElementById('newContent').value;
+                    const newExpirationDate = popup.document.getElementById('newExpirationDate').value;
+                    
+                    try {
+                        // Update the paste with the new title and content
+                        const updatedPaste = await axios.put(`/api/pastes/${pasteId}`, {
+                            title: newTitle,
+                            content: newContent,
+                            expiration_date: newExpirationDate
+                        });
+                        
+                        console.log('Paste updated successfully:', updatedPaste.data);
+                        popup.close(); // Close the popup window
+                        fetchAndDisplayPastes(); // Refresh paste list
+                    } catch (error) {
+                        console.error('Error updating paste:', error);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching paste data:', error);
+            }
+        }
+
+
+        // Function to handle paste deletion
+        async function deletePaste(pasteId, title) {
+            try {
+                let ans = prompt(`Enter ${title} to confirm deletion:`);
+                if(ans != title) return;
+                await axios.delete(`/api/pastes/${pasteId}`);
+                fetchAndDisplayPastes(); // Refresh paste list
+                console.log('Delete paste with ID:', pasteId);
+            } catch (error) {
+                console.error('Error deleting paste:', error);
+            }
+        }
+
+        // Add event listener to logout button
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await axios.post('/logout');
+                window.location.href = '/login_page';
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        });
+
+        // Function to get greeting message based on time
+        function getGreetingMessage() {
+            const now = new Date();
+            const hour = now.getHours();
+
+            if (hour < 12) {
+                return 'Good Morning';
+            } else if (hour < 18) {
+                return 'Good Afternoon';
+            } else {
+                return 'Good Evening';
+            }
+        }
+
+        async function getCurrentUser() {
+            try {
+                const response = await axios.get('/current_user');
+                return response.data;
+            } catch (error) {
+                console.error('Error fetching current user:', error);
+                return null;
+            }
+        }
+
+        async function displayCurrentUser() {
+            const currentUser = await getCurrentUser();
+            if (currentUser) {
+                console.log('Username:', currentUser.username);
+                console.log('Email:', currentUser.email);
+                // Update UI with the current user's information
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                welcomeMessage.textContent = `${getGreetingMessage()} ${currentUser.username}`;
+                const userEmailElement = document.getElementById('userEmail');
+                userEmailElement.textContent = `Email: ${currentUser.email}`;
+            } else {
+                console.log('No user is currently logged in.');
+            }
+        }
+
+
+        // Add event listener to form submission
+        document.getElementById('createPasteForm').addEventListener('submit', handleFormSubmit);
+
+        // Fetch and display pastes on page load
+        fetchAndDisplayPastes();
+
+        // Display current user's information
+        displayCurrentUser();
+    </script>
+</body>
+</html>
