@@ -189,3 +189,5 @@ app.listen(PORT, () => {
         await Paste.deleteExpiredPastes();
     });
 });
+
+module.exports = app;
