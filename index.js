@@ -36,7 +36,7 @@ app.get('/register_page', (req, res) => {
 app.get('/pastes', (req, res) => {
     // Check if user is logged in
     if (req.session && req.session.userId) {
-        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+        res.sendFile(path.join(__dirname, 'public', 'home.html'));
     } else {
         res.redirect('/login_page');
     }
