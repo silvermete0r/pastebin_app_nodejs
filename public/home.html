@@ -6,6 +6,8 @@
     <title>Pastebin Web Application</title>
     <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/4436/4436481.png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body class="bg-gray-100">
     <!-- Header section -->
@@ -28,6 +30,10 @@
             <div class="mb-2">
                 <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
                 <textarea id="content" name="content" rows="4" class="mt-1 p-2 border border-gray-300 rounded-md w-full" required></textarea>
+            </div>
+            <div class="mb-4">
+                <h3 class="text-lg font-bold mb-2">Preview:</h3>
+                <div id="preview" class="border border-gray-300 p-2 rounded-md"></div>
             </div>
             <div class="mb-2">
                 <label for="expiration_date" class="block text-sm font-medium text-gray-700">Expiration Date (Optional)</label>
@@ -224,6 +230,9 @@
             }
         }
 
+        $("#content").on('input', function (e) {
+            document.getElementById('preview').innerHTML = marked.parse(e.target.value);
+        });
 
         // Add event listener to form submission
         document.getElementById('createPasteForm').addEventListener('submit', handleFormSubmit);

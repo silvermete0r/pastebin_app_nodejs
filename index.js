@@ -8,10 +8,11 @@ const shortId = require('shortid');
 require('dotenv').config();
 
 const app = express();
+app.set('view engine', 'ejs');
 const PORT = process.env.PORT || 3000;
 const mongoAtlasUri = process.env.MONGO_URI; // 'mongodb://127.0.0.1:27017/pastebin';
 
-mongoose.connect(mongoAtlasUri, { serverSelectionTimeoutMS: 2000 });
+mongoose.connect(mongoAtlasUri, { serverSelectionTimeoutMS: 3000 });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
@@ -21,6 +22,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+// EJS template files
+app.set('views', path.join(__dirname, 'views'));
 
 // Main route / Login
 app.get(['/', '/login_page'], (req, res) => {
@@ -141,6 +145,20 @@ app.get('/api/pastes/:id', async (req, res) => {
             return res.status(404).json({ message: 'Paste not found' });
         }
         res.json(paste);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+app.get('/api/pastes/:id/page', async (req, res) => {
+    try {
+        const paste = await Paste.findById(req.params.id).exec();
+        if (!paste) {
+            return res.status(404).json({ message: 'Paste not found' });
+        }
+        const author = await User.findById(paste.author).exec();
+        paste.author = author;
+        res.render('paste', { paste });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
