@@ -27,6 +27,7 @@ This is a Node.js application for managing pastes with unique IDs and generating
 - **Node.js:** JavaScript runtime environment for server-side development.
 - **Express.js:** Web application framework for Node.js used for routing and middleware.
 - **MongoDB:** NoSQL database used for storing paste and user data.
+- **Tailwind:** Utility-first CSS framework for rapidly building custom designs.
 - **Mongoose:** MongoDB object modeling tool for Node.js used for data modeling and querying.
 - **bcrypt:** Library for hashing passwords securely.
 - **Express Session:** Middleware for managing user sessions in Express.js.
