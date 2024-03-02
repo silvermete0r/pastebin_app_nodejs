@@ -60,6 +60,8 @@ Once the application is set up and running, you can access it via the specified 
 
 - **Login Page:** Access the login page at `/login_page`.
 - **Registration Page:** Access the registration page at `/register_page`.
+- **JSON-formatted Paste details by unique short ID:** Access it by `/api/pastes/<id>`
+- **Custom page with Paste details by unique short ID:** Access it by `/api/pastes/<id>/page`
 - **Pastes Page:** Access the pastes page at `/pastes`.
 - **API Endpoints:** Use the provided REST API endpoints for managing pastes and user authentication.
 
