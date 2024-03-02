@@ -2,6 +2,16 @@
 
 This is a Node.js application for managing pastes with unique IDs and generating custom pages for each paste. It includes features such as login and registration systems.
 
+<a href="https://github.com/silvermete0r/pastebin_app_nodejs">
+    <img src="https://img.shields.io/github/stars/silvermete0r/pastebin_app_nodejs?style=social">
+</a> 
+<a href="https://github.com/silvermete0r/pastebin_app_nodejs">
+    <img src="https://img.shields.io/github/forks/silvermete0r/pastebin_app_nodejs?style=plastic">
+</a> 
+<a href="https://github.com/silvermete0r/pastebin_app_nodejs">
+    <img src="https://img.shields.io/github/license/silvermete0r/pastebin_app_nodejs?style=plastic">
+</a>
+
 ![image](https://github.com/silvermete0r/pastebin_app_nodejs/assets/108217670/1fc933e6-5cda-4455-af74-06b613da41c9)
 
 
