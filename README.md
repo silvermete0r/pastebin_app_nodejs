@@ -2,6 +2,8 @@
 
 This is a Node.js application for managing pastes with unique IDs and generating custom pages for each paste. It includes features such as login and registration systems.
 
+*This application was developed as part of the "Web Development: Backend" course in the 2nd year "Software Engineering" educational program in Astana IT University (Astana, Kazakhstan).*
+
 <a href="https://github.com/silvermete0r/pastebin_app_nodejs">
     <img src="https://img.shields.io/github/stars/silvermete0r/pastebin_app_nodejs?style=social">
 </a> 
