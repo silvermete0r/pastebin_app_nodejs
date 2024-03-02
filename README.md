@@ -43,6 +43,7 @@ This is a Node.js application for managing pastes with unique IDs and generating
 - **Express Session:** Middleware for managing user sessions in Express.js.
 - **Shortid:** Library for generating unique IDs for pastes.
 - **Cron:** Library for scheduling tasks, used for auto-deletion of expired pastes.
+- **EJS:** EJS is a flexible and widely used template engine that is well-suited for building dynamic web applications and generating HTML content in Node.
 
 ## Setup
 
