@@ -36,16 +36,20 @@
             event.preventDefault();
             const form = event.target;
             const formData = new FormData(form);
+            const username = formData.get('username');
 
             try {
-                const response = await axios.post('/register', Object.fromEntries(formData));
-                // Check if registration is successful
-                if (response.status === 201) {
-                    alert('Registration successful');
-                    // Redirect to login page after successful registration
-                    window.location.href = '/login_page';
+                const githubResponse = await axios.get(`https://api.github.com/users/${username}`);
+                if(githubResponse.status === 200) {
+                    const response = await axios.post('/register', Object.fromEntries(formData));
+                    if (response.status === 201) {
+                        alert('Registration successful');
+                        window.location.href = '/login_page';
+                    } else {
+                        alert('Registration failed. Please try again.');
+                    }
                 } else {
-                    alert('Registration failed. Please try again.');
+                    alert('Username does not exist on GitHub. Please enter a valid username.');
                 }
             } catch (error) {
                 console.error('Error registering:', error);
