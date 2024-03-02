@@ -11,7 +11,11 @@ This is a Node.js application for managing pastes with unique IDs and generating
 <a href="https://github.com/silvermete0r/pastebin_app_nodejs">
     <img src="https://img.shields.io/github/license/silvermete0r/pastebin_app_nodejs?style=plastic">
 </a>
+<a href="https://pastebin-app-nodejs.onrender.com/">
+    <img alt="Static Badge" src="https://img.shields.io/badge/pastebin-app?style=plastic">
+</a>
 
+---
 ![image](https://github.com/silvermete0r/pastebin_app_nodejs/assets/108217670/1fc933e6-5cda-4455-af74-06b613da41c9)
 
 
