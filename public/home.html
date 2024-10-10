@@ -6,6 +6,26 @@
     <title>Pastebin Web Application</title>
     <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/4436/4436481.png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #editor {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 200px;
+            width: 100%;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .toolbar {
+            margin-bottom: 10px;
+        }
+        .toolbar button {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <!-- Header section -->
@@ -20,15 +40,41 @@
     <div class="container mx-auto p-4">
         <h2 class="text-2xl font-bold mb-4" id="welcomeMessage"></h2>
         <!-- Form to create a new paste -->
-        <form id="createPasteForm" class="mb-4">
+        <form id="createPasteForm" class="mb-4" onsubmit="return getContent()">
             <div class="mb-2">
                 <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
                 <input type="text" id="title" name="title" class="mt-1 p-2 border border-gray-300 rounded-md w-full" required>
             </div>
-            <div class="mb-2">
+            <!-- <div class="mb-2">
                 <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
                 <textarea id="content" name="content" rows="4" class="mt-1 p-2 border border-gray-300 rounded-md w-full" required></textarea>
+            </div> -->
+
+            <div class="toolbar">
+                <button onclick="format('bold')"><strong>B</strong></button>
+                <button onclick="format('italic')"><em>I</em></button>
+                <button onclick="format('underline')"><u>U</u></button>
+                <button onclick="format('insertOrderedList')">OL</button>
+                <button onclick="format('insertUnorderedList')">UL</button>
+                <button onclick="format('createLink', prompt('Enter URL:'))">Link</button>
+                <button onclick="format('undo')">Undo</button>
+                <button onclick="format('redo')">Redo</button>
             </div>
+        
+            <div id="editor" name = "editor" contenteditable="true"></div>
+            <textarea id="content" name="content" style="display:none"></textarea>
+        
+            <script>
+                function format(command, value = null) {
+                    document.execCommand(command, false, value);
+                }
+
+                function getContent(){
+                    document.getElementById("content").value = document.getElementById("editor").innerHTML;
+                }
+
+            </script>
+
             <div class="mb-2">
                 <label for="expiration_date" class="block text-sm font-medium text-gray-700">Expiration Date (Optional)</label>
                 <input type="date" id="expiration_date" name="expiration_date" class="mt-1 p-2 border border-gray-300 rounded-md w-full">

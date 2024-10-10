@@ -10,7 +10,7 @@ require('dotenv').config();
 const app = express();
 app.set('view engine', 'ejs');
 const PORT = process.env.PORT || 3000;
-const mongoAtlasUri = process.env.MONGO_URI; // 'mongodb://127.0.0.1:27017/pastebin';
+const mongoAtlasUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/pastebin';
 
 mongoose.connect(mongoAtlasUri, { serverSelectionTimeoutMS: 3000 });
 const db = mongoose.connection;
